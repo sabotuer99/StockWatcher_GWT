@@ -1,0 +1,3 @@
+# Module stockwatcher
+# RPC service class, partial path of RPC policy file
+troy.stockwatcher.client.GreetingService, D98D41B639FAFA2B7F349248ACA71460.gwt.rpc

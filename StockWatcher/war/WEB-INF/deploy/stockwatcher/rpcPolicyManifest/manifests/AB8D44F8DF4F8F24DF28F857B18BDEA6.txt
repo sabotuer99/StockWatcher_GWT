@@ -1,0 +1,2 @@
+serviceClass: troy.stockwatcher.client.GreetingService
+path: D98D41B639FAFA2B7F349248ACA71460.gwt.rpc
