@@ -32,8 +32,10 @@ public class StockWatcher implements EntryPoint {
   private TextBox newSymbolTextBox = new TextBox();
   private Button addStockButton = new Button("Add");
   private Label lastUpdatedLabel = new Label();
+  //private ArrayList<String> stocks = new ArrayList<String>();
   private ArrayList<String> stocks = new ArrayList<String>();
-
+  private StockPriceServiceAsync stockPriceSvc = GWT.create(StockPriceService.class);
+  private Label errorMsgLabel = new Label();
   /**
    * Entry point method.
    */
@@ -58,6 +60,10 @@ public class StockWatcher implements EntryPoint {
 	  addPanel.addStyleName("addPanel");
 	  
     //Assemble Main panel.
+	  errorMsgLabel.setStyleName("errorMessage");
+	  errorMsgLabel.setVisible(false);
+
+	  mainPanel.add(errorMsgLabel);
 	  mainPanel.add(stocksFlexTable);
 	  mainPanel.add(addPanel);
 	  mainPanel.add(lastUpdatedLabel);
@@ -141,8 +147,7 @@ public class StockWatcher implements EntryPoint {
       refreshWatchList();
   }
   
-  //private ArrayList<String> stocks = new ArrayList<String>();
-  private StockPriceServiceAsync stockPriceSvc = GWT.create(StockPriceService.class);
+
   
 	private void refreshWatchList() {
 		// Initialize the service proxy.
@@ -153,7 +158,14 @@ public class StockWatcher implements EntryPoint {
 	     // Set up the callback object.
 	    AsyncCallback<StockPrice[]> callback = new AsyncCallback<StockPrice[]>() {
 	      public void onFailure(Throwable caught) {
-	        // TODO: Do something with errors.
+	    	// If the stock code is in the list of delisted codes, display an error message.
+	    	    String details = caught.getMessage();
+	    	    if (caught instanceof DelistedException) {
+	    	      details = "Company '" + ((DelistedException)caught).getSymbol() + "' was delisted";
+	    	    }
+
+	    	    errorMsgLabel.setText("Error: " + details);
+	    	    errorMsgLabel.setVisible(true);
 	      }
 
 	      public void onSuccess(StockPrice[] result) {
@@ -183,6 +195,8 @@ public class StockWatcher implements EntryPoint {
 	      lastUpdatedLabel.setText("Last update : " 
 	        + dateFormat.format(new Date()));
 		
+	   // Clear any errors.
+	      errorMsgLabel.setVisible(false);
 	}
 	
     /**
