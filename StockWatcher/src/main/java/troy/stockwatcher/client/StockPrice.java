@@ -2,7 +2,10 @@ package troy.stockwatcher.client;
 
 import java.io.Serializable;
 
-public class StockPrice implements Serializable{
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+@SuppressWarnings("serial")
+public class StockPrice implements IsSerializable, Serializable{
 	  private String symbol;
 	  private double price;
 	  private double change;
